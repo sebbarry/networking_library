@@ -12,11 +12,19 @@ struct Endpoint {
     var queryItems: [URLQueryItem] = []
 }
 
+
+#if DEBUG
+let environment = Environment.development
+#else
+let environment = Environment.production
+#endif
+
+
 extension Endpoint {
     var url: URL {
         var components = URLComponents()
-        components.scheme = "https"
-        components.host = "api.hostname.app"
+        components.scheme = "http"
+        components.host = environment.baseURL()
         components.path = "/" + path
         components.queryItems = queryItems
         guard let url = components.url else {
