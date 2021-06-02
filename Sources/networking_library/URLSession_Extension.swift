@@ -11,7 +11,7 @@ extension URLSession {
     typealias Handler = (Data?, URLResponse?, Error?) -> Void
     
     @discardableResult//makes handling the task optional
-    func request(
+    func get(
         _ endpoint: Endpoint,
         then handler: @escaping Handler
     ) -> URLSessionDataTask {
@@ -19,11 +19,30 @@ extension URLSession {
         task.resume()
         return task
     }
+    
+    func sendPostRequest(
+        _ endpoint: Endpoint,
+        body: Data,
+            then handler: @escaping (Result<Data, Error>) -> Void
+        ) -> URLSessionDataTask {
+            var request = URLRequest(
+                url: endpoint.url,
+                cachePolicy: .reloadIgnoringLocalCacheData
+            )
+        
+            request.httpMethod = "POST"
+            request.httpBody = body
+
+            let task = dataTask(with: endpoint.url)
+            task.resume()
+            return task
+        }
 }
 
 
+//example usage of the code
 func loadArticles(withId id: String, using session: URLSession = .shared) {
-    session.request(.recommendations) { (data, response, error) in
+    session.sendPostRequest(.recommendations, body: Data()) { result in
         <#code#>
     }
 }
