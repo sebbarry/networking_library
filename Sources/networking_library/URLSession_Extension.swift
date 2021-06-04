@@ -18,14 +18,13 @@ extension URLSession {
     
     typealias Handler = (Data?, URLResponse?, Error?) -> Void
     
-    @discardableResult//makes handling the task optional
+    //@discardableResult//makes handling the task optional
     func get(
         _ endpoint: Endpoint,
         then handler: @escaping Handler
-    ) -> URLSessionDataTask {
+    ) {
         let task = dataTask(with: endpoint.url, completionHandler: handler)
         task.resume()
-        return task
     }
     
     func sendPostRequest(
@@ -33,7 +32,8 @@ extension URLSession {
         isSecure: Bool?,//sends a cookie with the request.
         body: Data?,
             then handler: @escaping Handler
-        ) -> URLSessionDataTask {
+        ) {
+        
         var request = URLRequest(
             url: endpoint.url,
             cachePolicy: .reloadIgnoringLocalCacheData
@@ -43,18 +43,12 @@ extension URLSession {
         if let body = body {
             request.httpBody = body
         }
-        request.addValue("application/json", forHTTPHeaderField: "Content-type")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let _ = isSecure {
             //add code to add a token from local storage ere.
         }
 
-        let task = dataTask(with: endpoint.url)
+        let task = dataTask(with: request, completionHandler: handler)
         task.resume()
-        return task
     }
-}
-
-
-//example usage of the code
-func loadArticles(withId id: String, using session: URLSession = .shared) {
 }

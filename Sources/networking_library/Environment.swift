@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Environment {
+enum ApplicationEnvironment {
     case development
     case staging
     case production
@@ -17,16 +17,16 @@ enum Environment {
         case .development:
             return "\(domain())"
         case .staging:
-            return ""
+            return "\(domain())"
         case .production:
-            return ""
+            return "\(domain())"
         }
     }
 
     func domain() -> String {
         switch self {
         case .development:
-            return "localhost:5000"//change on port
+            return "localhost"//change on port
         case .staging:
             return "";
         case .production:
@@ -40,5 +40,13 @@ enum Environment {
             return ""
         }
     }
+    
+    func getPort() -> Int {
+        switch self {
+        case .development, .staging, .production:
+            return 5000//switch on port
+        }
+    }
  
 }
+
